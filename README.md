@@ -48,3 +48,10 @@ groupId所在群组Id
 group
 groupId群组ID
 userCnt包含用户数量
+
+
+
+
+
+
+
