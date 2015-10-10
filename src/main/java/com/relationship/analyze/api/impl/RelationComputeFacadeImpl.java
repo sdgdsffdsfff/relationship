@@ -4,7 +4,7 @@ import com.relationship.analyze.api.RelationComputeFacade;
 import com.relationship.analyze.domain.User;
 import com.relationship.analyze.domain.graph.RelateUserContainer;
 import com.relationship.analyze.domain.result.RelationComputeResult;
-import com.relationship.analyze.service.compute.GraphComputeBFSImpl;
+import com.relationship.analyze.service.compute.ComputeService;
 
 /**
  * 用户关系计算服务实现
@@ -13,27 +13,27 @@ import com.relationship.analyze.service.compute.GraphComputeBFSImpl;
  */
 public class RelationComputeFacadeImpl implements RelationComputeFacade {
     /**  graphComputeBFSImpl   */
-    private GraphComputeBFSImpl graphComputeBFSImpl;
+    private ComputeService computeService;
 
     @Override
     public RelationComputeResult relationBetween(User src, User dst, Integer depthLimit) {
-        return graphComputeBFSImpl.relationBetween(src, dst, depthLimit);
+        return computeService.relationBetween(src, dst, depthLimit);
     }
 
     @Override
     public RelateUserContainer relateElements(User src, Integer depth) {
-        return graphComputeBFSImpl.relateElements(src, depth);
+        return computeService.relateElements(src, depth);
     }
 
     @Override
     public RelateUserContainer relateElementSize(User src, Integer depth) {
-        return graphComputeBFSImpl.relateElementSize(src, depth);
+        return computeService.relateElementSize(src, depth);
     }
 
     /**
-     * @param graphComputeBFSImpl the graphComputeBFSImpl to set
+     * @param computeService the computeService to set
      */
-    public void setGraphComputeBFSImpl(GraphComputeBFSImpl graphComputeBFSImpl) {
-        this.graphComputeBFSImpl = graphComputeBFSImpl;
+    public void setComputeService(ComputeService computeService) {
+        this.computeService = computeService;
     }
 }

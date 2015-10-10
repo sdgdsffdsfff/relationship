@@ -3,6 +3,9 @@ package com.relationship.analyze.service.relation.manage;
 import com.relationship.analyze.domain.User;
 import com.relationship.analyze.domain.result.RelationManageResult;
 
+/**
+ * @author yanjiu.lj
+ */
 public interface RelationManager {
     /**
      * 两用户增加朋友关系

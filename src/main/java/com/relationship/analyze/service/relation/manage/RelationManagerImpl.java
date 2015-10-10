@@ -10,6 +10,7 @@ import com.relationship.analyze.domain.User;
 import com.relationship.analyze.domain.result.RelationManageResult;
 import com.relationship.analyze.service.template.ServiceCallback;
 import com.relationship.analyze.service.template.ServiceProcessTemplate;
+import com.relationship.analyze.service.util.RelationshipConstants;
 
 /**
  * RelationManagerImpl
@@ -83,7 +84,7 @@ public class RelationManagerImpl extends ServiceProcessTemplate implements Relat
     private UserDO addFriendIdToUser(final UserDO user, String friendsId) {
         StringBuffer buffer = new StringBuffer(user.getFriendsId());
 
-        buffer.append(",");
+        buffer.append(RelationshipConstants.SEP);
         buffer.append(friendsId);
         user.setFriendsId(buffer.toString());
 
@@ -98,14 +99,14 @@ public class RelationManagerImpl extends ServiceProcessTemplate implements Relat
      * @return ÓÃ»§DO
      */
     private UserDO delFriendIdFromUser(final UserDO user, String friendsId) {
-        String[] frinendsId = user.getFriendsId().split(",");
+        String[] frinendsId = user.getFriendsId().split(RelationshipConstants.SEP);
 
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < frinendsId.length; i++) {
             if (!frinendsId[i].equals(friendsId)) {
                 buffer.append(frinendsId[i]);
                 if (i != frinendsId.length - 1) {
-                    buffer.append(",");
+                    buffer.append(RelationshipConstants.SEP);
                 }
             }
         }

@@ -91,9 +91,15 @@
 	
   	<bean id="graphComputeBFSImpl" class="com.relationship.analyze.service.compute.GraphComputeBFSImpl"/>
   	
-  	<bean id="relationComputeFacade" class="com.relationship.analyze.api.impl.RelationComputeFacadeImpl">
-		<property name="graphComputeBFSImpl">
+  	<bean id="computeServiceWithCache" class="com.relationship.analyze.service.cache.ComputeServiceWithCache">
+		<property name="computeService">
 			<ref bean="graphComputeBFSImpl" />
+		</property>
+	</bean>
+	
+  	<bean id="relationComputeFacade" class="com.relationship.analyze.api.impl.RelationComputeFacadeImpl">
+		<property name="computeService">
+			<ref bean=""computeServiceWithCache"" />
 		</property>
 	</bean>
   	
