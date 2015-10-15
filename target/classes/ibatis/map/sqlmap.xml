@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+  <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+  			"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="Student">
+
+	<!-- 定义别名，使用时就可省略包名 -->
+	<typeAlias alias="UserDO" type="com.relationship.analyze.dal.dataobject.UserDO" />
+
+	<!-- 根据ID查询 -->
+	<select id="queryById" parameterClass="java.lang.String" resultClass="UserDO">
+		select * from user where userId=#userId#
+	</select>
+	
+	<!-- 根据ID查询 -->
+	<select id="queryByGroupId" parameterClass="java.lang.String" resultClass="UserDO">
+		select * from user where groupId=#groupId#
+	</select>
+	
+	<!-- 根据ID锁定 -->
+	<select id="lockById" parameterClass="java.lang.String" resultClass="UserDO">
+		select * from user where groupId=#groupId# for update no wait
+	</select>
+
+	<!-- 添加 -->
+	<insert id="insert" parameterClass="UserDO">
+		insert into user(userId,name,friendsId,groupId,memo)
+		values(#userId#,#name#,#friendsId#,#groupId#,#memo#)
+	</insert>
+
+	<!-- 修改 -->
+	<update id="update" parameterClass="UserDO">
+		update user 
+		set userId=#userId#,name=#name#,friendsId=#friendsId#,groupId=#groupId#,memo=#memo#
+		where userId=#userId#
+	</update>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterClass="UserDO">
+		delete from user where userId=#userId#
+	</delete>
+</sqlMap>

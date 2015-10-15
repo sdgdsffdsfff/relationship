@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="     
+          http://www.springframework.org/schema/beans     
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd     
+          http://www.springframework.org/schema/tx     
+          http://www.springframework.org/schema/tx/spring-tx-3.0.xsd    
+          http://www.springframework.org/schema/context     
+          http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+          http://www.springframework.org/schema/jee
+          http://www.springframework.org/schema/jee/spring-jee-3.0.xsd 
+          http://www.springframework.org/schema/aop     
+          http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+	default-autowire="byName">
+	
+	<!-- 读取数据源配置文件 -->
+	<bean id="propertyConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>database.properties</value>
+		</property>
+	</bean>
+
+	<!--配置一个数据源,根据上面propertyConfig指定的location去找数据库连接的配置信息 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>${database.driver}</value>
+		</property>
+		<property name="url">
+			<value>${database.url}</value>
+		</property>
+		<property name="username">
+			<value>${database.username}</value>
+		</property>
+		<property name="password">
+			<value>${database.password}</value>
+		</property>
+	</bean>
+	
+	<!-- 配置事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource">  
+            <ref bean="dataSource" />  
+        </property>  
+    </bean> 
+    
+    <!-- 事务模板 -->
+	<bean id="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+	</bean>
+	
+	<!-- 利用spring的SqlMapClientFactoryBean类生成sqlmapclient工厂 -->
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">  
+        <property name="dataSource">  
+            <ref bean="dataSource" />  
+        </property>  
+        <property name="configLocation">
+        	<value>ibatis/sqlmap_config.xml</value>
+        </property>  
+    </bean>
+
+	<!--根据sqlMapClien创建一个SqlMapClient模版类 -->
+	<bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+    
+    <!--将上面的模版类织入到我们的DAO对象中-->
+    <bean id="userDAO" class="com.relationship.analyze.dal.datainterface.UserDAOImpl">
+    	<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+  	</bean>
+  	
+  	<bean id="relationManager" class="com.relationship.analyze.service.relation.manage.RelationManagerImpl">
+  		<property name="userDAO">
+			<ref bean="userDAO" />
+		</property>
+		<property name="transactionTemplate">
+			<ref bean="transactionTemplate" />
+		</property>
+	</bean>
+	
+  	<bean id="graphComputeBFSImpl" class="com.relationship.analyze.service.compute.GraphComputeBFSImpl"/>
+  	
+  	<bean id="computeServiceWithCache" class="com.relationship.analyze.service.cache.ComputeServiceWithCache">
+		<property name="computeService">
+			<ref bean="graphComputeBFSImpl" />
+		</property>
+	</bean>
+	
+  	<bean id="relationComputeFacade" class="com.relationship.analyze.api.impl.RelationComputeFacadeImpl">
+		<property name="computeService">
+			<ref bean=""computeServiceWithCache"" />
+		</property>
+	</bean>
+  	
+  	<bean id="relationManageFacade" class="com.relationship.analyze.api.impl.RelationManageFacadeImpl">
+		<property name="relationManager">
+			<ref bean="relationManager" />
+		</property>
+	</bean>
+ 
+</beans>
